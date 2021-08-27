@@ -1,6 +1,8 @@
 from tkinter import *
 import random
 import time
+import math
+from tkinter import messagebox
 
 grid = ['a1', 'a2', 'b1', 'b2']
 
@@ -90,6 +92,7 @@ class chess:
         self.cont = True
         self.score = 0
         self.total = 0
+        self.timer0 = False
         self.grid = ['a1','a2','a3','a4','a5','a6','a7','a8','b1','b2','b3','b4','b5','b6','b7','b8','c1','c2','c3','c4','c5','c6','c7','c8','d1','d2','d3','d4','d5','d6','d7','d8',
         'e1','e2','e3','e4','e5','e6','e7','e8','f1','f2','f3','f4','f5','f6','f7','f8','g1','g2','g3','g4','g5','g6','g7','g8']
 
@@ -113,20 +116,29 @@ class chess:
         submit.place(x=100,y=50)
 
     def timer(self):
+        self.timer0 = False
         second=StringVar()
         second.set("30")
-        secondtime= Label(root, background='#CBC3E3',width=3, font=("Times",18,""),
+        secondtime= Label(root, background='#CBC3E3',width=5, font=("Times",18,""),
                         textvariable=second)
         secondtime.place(x=65,y=390)
-        temp = 30
-        while temp >-1:
-            mins,secs = divmod(temp,60)
-            second.set("{0:2d}".format(secs))
-            root.update()
-            time.sleep(1)
-            temp -= 1
-            if temp == 0:
-                self.cont = False
+        temp = 30   
+        while temp >= 0:
+            if not self.timer0:
+                mins,secs = divmod(temp,60)
+                second.set("{0:2}".format(secs))
+                root.update()
+                time.sleep(.25)
+                temp -= .25
+                if temp == 0:
+                    messagebox.showinfo("Times Up!", "You got " + str(self.score) + ' out of ' + str(self.total) +' correct!')
+                    self.cont = False
+            elif self.timer0:
+                temp=-1
+                zero= Label(root, background='#CBC3E3',width=5, font=("Times",18,""), text=(''))
+                zero.place(x=65,y=390)
+
+
     
     def submit(self):
             if self.cont:
@@ -138,6 +150,7 @@ class chess:
                 self.grid_prompt = str(gridprompt)
 
     def reset(self):
+        self.timer0 = True
         self.score = 0
         self.total = 0
         self.cont = True
